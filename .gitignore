@@ -1,0 +1,31 @@
+# Project Root
+node_modules
+.env
+.env.local
+.env.production
+
+# Build Folders
+dist
+build
+
+# Editor & OS Files
+.vscode
+.DS_Store
+
+# Backend Specific
+backend/node_modules
+backend/.env
+backend/.env.local
+backend/.env.production
+
+# Frontend Specific
+frontend/node_modules
+frontend/.env
+frontend/.env.local
+frontend/.env.production
+
+# Ensure secrets are absolutely ignored
+*.pem
+*.key
+.env*
+!.env.example
