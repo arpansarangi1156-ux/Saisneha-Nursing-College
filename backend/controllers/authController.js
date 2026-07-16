@@ -7,9 +7,20 @@ const generateToken = (id) => {
   });
 };
 
+const allowedAdmins = [
+  "admin@saisneha.edu",
+  "kkmishrasai@gmail.com",
+  "arpansarangi1156@gmail.com" // Update with real email
+];
+
 export const authAdmin = async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    if (!allowedAdmins.includes(email)) {
+      return res.status(403).json({ message: 'Access Denied: Email not authorized.' });
+    }
+
     const admin = await Admin.findOne({ email });
 
     if (admin && (await admin.matchPassword(password))) {
@@ -30,6 +41,11 @@ export const authAdmin = async (req, res) => {
 export const registerAdmin = async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    if (!allowedAdmins.includes(email)) {
+      return res.status(403).json({ message: 'Access Denied: Email not authorized.' });
+    }
+
     const adminExists = await Admin.findOne({ email });
 
     if (adminExists) {

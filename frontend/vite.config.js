@@ -10,8 +10,8 @@ export default defineConfig({
     strictPort: false,
     proxy: {
       '/api': {
-        target: 'http://localhost:5001',
-        changeOrigin: true
+        target: 'http://localhost:5002',
+        changeOrigin: true,
       }
     }
   }

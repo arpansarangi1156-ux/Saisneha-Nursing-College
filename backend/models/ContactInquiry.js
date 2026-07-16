@@ -11,8 +11,8 @@ const contactInquirySchema = new mongoose.Schema({
   message: { type: String, required: true },
   status: { 
     type: String, 
-    enum: ['new', 'read'], 
-    default: 'new' 
+    enum: ['Pending', 'Contacted', 'Resolved'], 
+    default: 'Pending' 
   },
 }, { timestamps: true });
 

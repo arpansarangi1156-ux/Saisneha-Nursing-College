@@ -19,6 +19,21 @@ export const createCourse = async (req, res) => {
   }
 };
 
+export const updateCourse = async (req, res) => {
+  try {
+    const course = await Course.findById(req.params.id);
+    if (course) {
+      Object.assign(course, req.body);
+      const updatedCourse = await course.save();
+      res.json(updatedCourse);
+    } else {
+      res.status(404).json({ message: 'Course not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export const deleteCourse = async (req, res) => {
   try {
     const course = await Course.findById(req.params.id);

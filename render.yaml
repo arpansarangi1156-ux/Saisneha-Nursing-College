@@ -2,6 +2,7 @@ services:
   - type: web
     name: saisneha-college-backend
     env: node
+    rootDir: backend
     buildCommand: npm install
     startCommand: npm start
     envVars:
@@ -9,6 +10,8 @@ services:
         value: production
       - key: PORT
         value: 5000
+      - key: FRONTEND_URL
+        value: https://saisneha-college-frontend.onrender.com
       - key: MONGO_URI
         sync: false
       - key: JWT_SECRET
@@ -19,3 +22,13 @@ services:
         sync: false
       - key: CLOUDINARY_API_SECRET
         sync: false
+
+  - type: web
+    name: saisneha-college-frontend
+    env: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://saisneha-college-backend.onrender.com/api

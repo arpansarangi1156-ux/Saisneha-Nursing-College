@@ -8,6 +8,7 @@ export const getAnnouncements = async (req, res) => {
     const announcements = await Announcement.find({ isActive: true }).sort({ createdAt: -1 });
     res.json(announcements);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Server Error' });
   }
 };
@@ -20,6 +21,7 @@ export const getAdminAnnouncements = async (req, res) => {
     const announcements = await Announcement.find({}).sort({ createdAt: -1 });
     res.json(announcements);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Server Error' });
   }
 };
@@ -41,6 +43,7 @@ export const createAnnouncement = async (req, res) => {
     const createdAnnouncement = await announcement.save();
     res.status(201).json(createdAnnouncement);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Server Error' });
   }
 };
@@ -68,6 +71,7 @@ export const updateAnnouncement = async (req, res) => {
       res.status(404).json({ message: 'Announcement not found' });
     }
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Server Error' });
   }
 };
@@ -86,6 +90,7 @@ export const deleteAnnouncement = async (req, res) => {
       res.status(404).json({ message: 'Announcement not found' });
     }
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Server Error' });
   }
 };

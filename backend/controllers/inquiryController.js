@@ -1,4 +1,5 @@
 import ContactInquiry from '../models/ContactInquiry.js';
+import nodemailer from 'nodemailer';
 
 // @desc    Submit a new contact inquiry
 // @route   POST /api/inquiries
@@ -16,6 +17,30 @@ export const submitInquiry = async (req, res) => {
     });
 
     const savedInquiry = await newInquiry.save();
+
+    // Send email notification (if SMTP is configured)
+    if (process.env.SMTP_USER && process.env.SMTP_PASS) {
+      const transporter = nodemailer.createTransport({
+        service: 'gmail', // Assuming Gmail, configurable via env
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS,
+        },
+      });
+
+      const mailOptions = {
+        from: process.env.SMTP_USER,
+        to: process.env.ADMIN_EMAIL || process.env.SMTP_USER,
+        subject: `New Admission Query: ${subject}`,
+        text: `You have received a new inquiry from ${name}.\n\nEmail: ${email}\nPhone: ${phone}\nMessage: ${message}`,
+      };
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) console.error('Error sending email:', error);
+        else console.log('Email sent:', info.response);
+      });
+    }
+
     res.status(201).json(savedInquiry);
   } catch (error) {
     res.status(500).json({ message: 'Server Error' });
@@ -34,17 +59,22 @@ export const getInquiries = async (req, res) => {
   }
 };
 
-// @desc    Mark inquiry as read
-// @route   PUT /api/inquiries/:id/read
+// @desc    Update inquiry status
+// @route   PUT /api/inquiries/:id/status
 // @access  Private/Admin
-export const markAsRead = async (req, res) => {
+export const updateStatus = async (req, res) => {
   try {
+    const { status } = req.body;
     const inquiry = await ContactInquiry.findById(req.params.id);
 
     if (inquiry) {
-      inquiry.isRead = true;
-      const updatedInquiry = await inquiry.save();
-      res.json(updatedInquiry);
+      if (['Pending', 'Contacted', 'Resolved'].includes(status)) {
+        inquiry.status = status;
+        const updatedInquiry = await inquiry.save();
+        res.json(updatedInquiry);
+      } else {
+        res.status(400).json({ message: 'Invalid status' });
+      }
     } else {
       res.status(404).json({ message: 'Inquiry not found' });
     }

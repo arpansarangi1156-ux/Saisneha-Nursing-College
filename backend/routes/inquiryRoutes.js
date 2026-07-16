@@ -1,6 +1,6 @@
 import express from 'express';
 import rateLimit from 'express-rate-limit';
-import { submitInquiry, getInquiries, markAsRead, deleteInquiry } from '../controllers/inquiryController.js';
+import { submitInquiry, getInquiries, updateStatus, deleteInquiry } from '../controllers/inquiryController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
@@ -15,8 +15,8 @@ router.route('/')
   .get(protect, getInquiries)
   .post(inquiryLimiter, submitInquiry);
 
-router.route('/:id/read')
-  .put(protect, markAsRead);
+router.route('/:id/status')
+  .put(protect, updateStatus);
 
 router.route('/:id')
   .delete(protect, deleteInquiry);

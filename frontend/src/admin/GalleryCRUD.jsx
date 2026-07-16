@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import axios from 'axios';
-import { Plus, Trash2, X } from 'lucide-react';
+import { Plus, Trash2, Edit, X } from 'lucide-react';
 
 const GalleryCRUD = () => {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editId, setEditId] = useState(null);
+
   const [formData, setFormData] = useState({
     title: '',
     category: 'Events',
@@ -37,26 +40,54 @@ const GalleryCRUD = () => {
     setFormData((prev) => ({ ...prev, image: e.target.files[0] }));
   };
 
+  const openAddModal = () => {
+    setIsEditing(false);
+    setEditId(null);
+    setFormData({ title: '', category: 'Events', image: null });
+    setShowModal(true);
+  };
+
+  const openEditModal = (img) => {
+    setIsEditing(true);
+    setEditId(img._id);
+    setFormData({
+      title: img.title,
+      category: img.category,
+      image: null,
+    });
+    setShowModal(true);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem('adminToken');
     const data = new FormData();
     data.append('title', formData.title);
     data.append('category', formData.category);
-    data.append('image', formData.image);
+    if (formData.image) {
+      data.append('image', formData.image);
+    }
 
     try {
-      await axios.post('/api/gallery', data, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      if (isEditing) {
+        await axios.put(`/api/gallery/${editId}`, data, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      } else {
+        await axios.post('/api/gallery', data, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      }
       setShowModal(false);
-      setFormData({ title: '', category: 'Events', image: null });
       fetchGallery();
     } catch (error) {
-      alert('Error uploading image');
+      alert(isEditing ? 'Error updating image' : 'Error uploading image');
       console.error(error);
     }
   };
@@ -82,7 +113,7 @@ const GalleryCRUD = () => {
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-gray-900">Manage Gallery</h1>
           <button 
-            onClick={() => setShowModal(true)}
+            onClick={openAddModal}
             className="bg-[var(--color-medical-blue)] text-white px-4 py-2 rounded-lg flex items-center hover:bg-blue-800"
           >
             <Plus size={20} className="mr-2" /> Upload Image
@@ -101,7 +132,10 @@ const GalleryCRUD = () => {
               <div key={img._id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden group">
                 <div className="h-48 w-full relative overflow-hidden">
                   <img src={img.imageUrl} alt={img.title} className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button onClick={() => openEditModal(img)} className="bg-white text-blue-600 p-2 rounded-full hover:bg-blue-50">
+                      <Edit size={20} />
+                    </button>
                     <button onClick={() => handleDelete(img._id)} className="bg-white text-red-600 p-2 rounded-full hover:bg-red-50">
                       <Trash2 size={20} />
                     </button>
@@ -119,14 +153,14 @@ const GalleryCRUD = () => {
         )}
       </div>
 
-      {/* Upload Modal */}
+      {/* Upload/Edit Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl shadow-xl w-full max-w-lg p-6 relative">
             <button onClick={() => setShowModal(false)} className="absolute top-4 right-4 text-gray-500 hover:text-gray-900">
               <X size={24} />
             </button>
-            <h2 className="text-xl font-bold mb-6">Upload Gallery Image</h2>
+            <h2 className="text-xl font-bold mb-6">{isEditing ? 'Edit Gallery Image' : 'Upload Gallery Image'}</h2>
             
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
@@ -144,13 +178,13 @@ const GalleryCRUD = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Select Image File</label>
-                <input type="file" accept="image/*" required onChange={handleFileChange} className="w-full border rounded-lg px-3 py-2" />
+                <label className="block text-sm font-medium text-gray-700 mb-1">Select Image File {isEditing && <span className="text-gray-400 font-normal">(Leave blank to keep current)</span>}</label>
+                <input type="file" accept="image/*" required={!isEditing} onChange={handleFileChange} className="w-full border rounded-lg px-3 py-2" />
               </div>
 
               <div className="flex justify-end pt-4">
                 <button type="submit" className="bg-[var(--color-medical-blue)] text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-800">
-                  Upload Image
+                  {isEditing ? 'Save Changes' : 'Upload Image'}
                 </button>
               </div>
             </form>

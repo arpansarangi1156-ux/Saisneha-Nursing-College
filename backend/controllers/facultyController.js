@@ -12,7 +12,7 @@ export const getFaculty = async (req, res) => {
 
 export const createFaculty = async (req, res) => {
   try {
-    const { name, qualification, specialization, experience } = req.body;
+    const { name, qualification, designation, department, experience } = req.body;
     let imageUrl = '';
     let cloudinaryId = '';
 
@@ -22,9 +22,36 @@ export const createFaculty = async (req, res) => {
       cloudinaryId = result.public_id;
     }
 
-    const faculty = new Faculty({ name, qualification, specialization, experience, imageUrl, cloudinaryId });
+    const faculty = new Faculty({ name, qualification, designation, department, experience, imageUrl, cloudinaryId });
     const createdFaculty = await faculty.save();
     res.status(201).json(createdFaculty);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const updateFaculty = async (req, res) => {
+  try {
+    const faculty = await Faculty.findById(req.params.id);
+    if (faculty) {
+      Object.assign(faculty, req.body);
+      
+      if (req.file) {
+        // Delete old image
+        if (faculty.cloudinaryId) {
+          await cloudinary.uploader.destroy(faculty.cloudinaryId);
+        }
+        // Upload new
+        const result = await cloudinary.uploader.upload(req.file.path, { folder: 'faculty' });
+        faculty.imageUrl = result.secure_url;
+        faculty.cloudinaryId = result.public_id;
+      }
+      
+      const updatedFaculty = await faculty.save();
+      res.json(updatedFaculty);
+    } else {
+      res.status(404).json({ message: 'Faculty not found' });
+    }
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

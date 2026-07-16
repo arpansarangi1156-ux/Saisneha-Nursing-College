@@ -7,6 +7,9 @@ const AdmissionCRUD = () => {
   const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editId, setEditId] = useState(null);
+  
   const [formData, setFormData] = useState({
     title: '',
     content: '',
@@ -40,21 +43,48 @@ const AdmissionCRUD = () => {
     }));
   };
 
+  const openAddModal = () => {
+    setIsEditing(false);
+    setEditId(null);
+    setFormData({ title: '', content: '', type: 'Guideline', isActive: true });
+    setShowModal(true);
+  };
+
+  const openEditModal = (item) => {
+    setIsEditing(true);
+    setEditId(item._id);
+    setFormData({
+      title: item.title,
+      content: item.content,
+      type: item.type,
+      isActive: item.isActive,
+    });
+    setShowModal(true);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem('adminToken');
     try {
-      await axios.post('/api/announcements', formData, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      if (isEditing) {
+        await axios.put(`/api/announcements/${editId}`, formData, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      } else {
+        await axios.post('/api/announcements', formData, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      }
       setShowModal(false);
-      setFormData({ title: '', content: '', type: 'Guideline', isActive: true });
       fetchAnnouncements();
     } catch (error) {
-      alert('Error creating record');
+      alert(isEditing ? 'Error updating record' : 'Error creating record');
       console.error(error);
     }
   };
@@ -92,7 +122,7 @@ const AdmissionCRUD = () => {
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-gray-900">Manage Admissions & Announcements</h1>
           <button 
-            onClick={() => setShowModal(true)}
+            onClick={openAddModal}
             className="bg-[var(--color-medical-blue)] text-white px-4 py-2 rounded-lg flex items-center hover:bg-blue-800"
           >
             <Plus size={20} className="mr-2" /> Add Record
@@ -128,6 +158,9 @@ const AdmissionCRUD = () => {
                       </button>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <button onClick={() => openEditModal(item)} className="text-blue-600 hover:text-blue-900">
+                        <Edit size={18} />
+                      </button>
                       <button onClick={() => handleDelete(item._id)} className="text-red-600 hover:text-red-900 ml-4">
                         <Trash2 size={18} />
                       </button>
@@ -140,14 +173,14 @@ const AdmissionCRUD = () => {
         </div>
       </div>
 
-      {/* Add Modal */}
+      {/* Add/Edit Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl p-6 relative">
             <button onClick={() => setShowModal(false)} className="absolute top-4 right-4 text-gray-500 hover:text-gray-900">
               <X size={24} />
             </button>
-            <h2 className="text-xl font-bold mb-6">Add New Record</h2>
+            <h2 className="text-xl font-bold mb-6">{isEditing ? 'Edit Record' : 'Add New Record'}</h2>
             
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
@@ -175,7 +208,7 @@ const AdmissionCRUD = () => {
 
               <div className="flex justify-end pt-4">
                 <button type="submit" className="bg-[var(--color-medical-blue)] text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-800">
-                  Save Record
+                  {isEditing ? 'Save Changes' : 'Save Record'}
                 </button>
               </div>
             </form>

@@ -13,7 +13,7 @@ export const getDashboardStats = async (req, res) => {
       Course.countDocuments(),
       ContactInquiry.countDocuments(),
       Gallery.countDocuments(),
-      ContactInquiry.find().sort({ createdAt: -1 }).limit(5)
+      ContactInquiry.find().sort({ createdAt: -1 }).limit(9)
     ]);
 
     res.json({

@@ -11,7 +11,11 @@ const SEO = ({ title, description, type = 'website' }) => {
       <title>{fullTitle}</title>
       <meta name='description' content={description} />
       
+      {/* Canonical Link */}
+      <link rel="canonical" href={window.location.href} />
+      
       {/* OpenGraph tags */}
+      <meta property='og:url' content={window.location.href} />
       <meta property='og:type' content={type} />
       <meta property='og:title' content={fullTitle} />
       <meta property='og:description' content={description} />

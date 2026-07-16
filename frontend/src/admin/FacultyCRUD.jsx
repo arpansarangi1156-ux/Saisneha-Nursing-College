@@ -7,6 +7,9 @@ const FacultyCRUD = () => {
   const [facultyList, setFacultyList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editId, setEditId] = useState(null);
+
   const [formData, setFormData] = useState({
     name: '',
     designation: '',
@@ -40,26 +43,57 @@ const FacultyCRUD = () => {
     setFormData((prev) => ({ ...prev, image: e.target.files[0] }));
   };
 
+  const openAddModal = () => {
+    setIsEditing(false);
+    setEditId(null);
+    setFormData({ name: '', designation: '', qualification: '', department: '', experience: '', image: null });
+    setShowModal(true);
+  };
+
+  const openEditModal = (faculty) => {
+    setIsEditing(true);
+    setEditId(faculty._id);
+    setFormData({
+      name: faculty.name,
+      designation: faculty.designation,
+      qualification: faculty.qualification,
+      department: faculty.department,
+      experience: faculty.experience,
+      image: null,
+    });
+    setShowModal(true);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem('adminToken');
     const data = new FormData();
     Object.keys(formData).forEach((key) => {
-      data.append(key, formData[key]);
+      if (formData[key] !== null) {
+        data.append(key, formData[key]);
+      }
     });
 
     try {
-      await axios.post('/api/faculty', data, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      if (isEditing) {
+        await axios.put(`/api/faculty/${editId}`, data, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      } else {
+        await axios.post('/api/faculty', data, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      }
       setShowModal(false);
-      setFormData({ name: '', designation: '', qualification: '', department: '', experience: '', image: null });
       fetchFaculty();
     } catch (error) {
-      alert('Error creating faculty profile');
+      alert(isEditing ? 'Error updating faculty profile' : 'Error creating faculty profile');
       console.error(error);
     }
   };
@@ -85,7 +119,7 @@ const FacultyCRUD = () => {
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-gray-900">Manage Faculty</h1>
           <button 
-            onClick={() => setShowModal(true)}
+            onClick={openAddModal}
             className="bg-[var(--color-medical-blue)] text-white px-4 py-2 rounded-lg flex items-center hover:bg-blue-800"
           >
             <Plus size={20} className="mr-2" /> Add Faculty
@@ -124,6 +158,9 @@ const FacultyCRUD = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{faculty.designation}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{faculty.department}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <button onClick={() => openEditModal(faculty)} className="text-blue-600 hover:text-blue-900">
+                        <Edit size={18} />
+                      </button>
                       <button onClick={() => handleDelete(faculty._id)} className="text-red-600 hover:text-red-900 ml-4">
                         <Trash2 size={18} />
                       </button>
@@ -136,14 +173,14 @@ const FacultyCRUD = () => {
         </div>
       </div>
 
-      {/* Add Modal */}
+      {/* Add/Edit Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl p-6 relative">
             <button onClick={() => setShowModal(false)} className="absolute top-4 right-4 text-gray-500 hover:text-gray-900">
               <X size={24} />
             </button>
-            <h2 className="text-xl font-bold mb-6">Add New Faculty</h2>
+            <h2 className="text-xl font-bold mb-6">{isEditing ? 'Edit Faculty' : 'Add New Faculty'}</h2>
             
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -171,13 +208,13 @@ const FacultyCRUD = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Profile Image</label>
-                <input type="file" name="image" accept="image/*" required onChange={handleFileChange} className="w-full border rounded-lg px-3 py-2" />
+                <label className="block text-sm font-medium text-gray-700 mb-1">Profile Image {isEditing && <span className="text-gray-400 font-normal">(Leave blank to keep current)</span>}</label>
+                <input type="file" name="image" accept="image/*" required={!isEditing} onChange={handleFileChange} className="w-full border rounded-lg px-3 py-2" />
               </div>
 
               <div className="flex justify-end pt-4">
                 <button type="submit" className="bg-[var(--color-medical-blue)] text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-800">
-                  Save Faculty
+                  {isEditing ? 'Save Changes' : 'Save Faculty'}
                 </button>
               </div>
             </form>

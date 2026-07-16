@@ -25,9 +25,12 @@ export const uploadImage = async (req, res) => {
       return res.status(400).json({ message: 'Please upload an image' });
     }
 
-    // Upload to cloudinary
+    // Upload to cloudinary with automatic optimization
     const result = await cloudinary.uploader.upload(req.file.path, {
-      folder: 'saisneha_gallery'
+      folder: 'saisneha_gallery',
+      transformation: [
+        { width: 1200, crop: "limit", fetch_format: "auto", quality: "auto" }
+      ]
     });
 
     const newImage = new Gallery({
@@ -43,6 +46,47 @@ export const uploadImage = async (req, res) => {
     fs.unlinkSync(req.file.path);
 
     res.status(201).json(createdImage);
+  } catch (error) {
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+// @desc    Update gallery image
+// @route   PUT /api/gallery/:id
+// @access  Private/Admin
+export const updateImage = async (req, res) => {
+  try {
+    const { title, category } = req.body;
+    const image = await Gallery.findById(req.params.id);
+
+    if (image) {
+      if (title) image.title = title;
+      if (category) image.category = category;
+
+      if (req.file) {
+        // Delete old image
+        if (image.cloudinaryId) {
+          await cloudinary.uploader.destroy(image.cloudinaryId);
+        }
+        
+        // Upload new to cloudinary with automatic optimization
+        const result = await cloudinary.uploader.upload(req.file.path, {
+          folder: 'saisneha_gallery',
+          transformation: [
+            { width: 1200, crop: "limit", fetch_format: "auto", quality: "auto" }
+          ]
+        });
+        
+        image.imageUrl = result.secure_url;
+        image.cloudinaryId = result.public_id;
+        fs.unlinkSync(req.file.path);
+      }
+
+      const updatedImage = await image.save();
+      res.json(updatedImage);
+    } else {
+      res.status(404).json({ message: 'Image not found' });
+    }
   } catch (error) {
     res.status(500).json({ message: 'Server Error' });
   }

@@ -26,19 +26,23 @@ const InquiryManagement = () => {
     fetchInquiries();
   }, []);
 
-  const handleRead = async (inquiry) => {
+  const handleSelect = (inquiry) => {
     setSelectedInquiry(inquiry);
-    if (!inquiry.isRead) {
-      const token = localStorage.getItem('adminToken');
-      try {
-        await axios.put(`/api/inquiries/${inquiry._id}/read`, {}, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        // Update local state
-        setInquiries(inquiries.map(i => i._id === inquiry._id ? { ...i, isRead: true } : i));
-      } catch (error) {
-        console.error('Error marking as read', error);
+  };
+
+  const updateStatus = async (id, newStatus) => {
+    const token = localStorage.getItem('adminToken');
+    try {
+      await axios.put(`/api/inquiries/${id}/status`, { status: newStatus }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setInquiries(inquiries.map(i => i._id === id ? { ...i, status: newStatus } : i));
+      if (selectedInquiry?._id === id) {
+        setSelectedInquiry({ ...selectedInquiry, status: newStatus });
       }
+    } catch (error) {
+      console.error('Error updating status', error);
+      alert('Error updating status');
     }
   };
 
@@ -55,6 +59,15 @@ const InquiryManagement = () => {
       } catch (error) {
         alert('Error deleting message');
       }
+    }
+  };
+
+  const getStatusColor = (status) => {
+    switch(status) {
+      case 'Pending': return 'bg-red-100 text-red-800';
+      case 'Contacted': return 'bg-yellow-100 text-yellow-800';
+      case 'Resolved': return 'bg-green-100 text-green-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
   };
 
@@ -77,18 +90,20 @@ const InquiryManagement = () => {
               inquiries.map((inquiry) => (
                 <div 
                   key={inquiry._id} 
-                  onClick={() => handleRead(inquiry)}
-                  className={`p-4 cursor-pointer hover:bg-blue-50 transition-colors ${selectedInquiry?._id === inquiry._id ? 'bg-blue-50 border-l-4 border-[var(--color-medical-blue)]' : 'border-l-4 border-transparent'} ${!inquiry.isRead ? 'font-bold' : ''}`}
+                  onClick={() => handleSelect(inquiry)}
+                  className={`p-4 cursor-pointer hover:bg-blue-50 transition-colors ${selectedInquiry?._id === inquiry._id ? 'bg-blue-50 border-l-4 border-[var(--color-medical-blue)]' : 'border-l-4 border-transparent'} ${inquiry.status === 'Pending' ? 'font-bold' : ''}`}
                 >
                   <div className="flex justify-between items-start mb-1">
-                    <h3 className={`text-gray-900 ${!inquiry.isRead ? 'font-bold' : 'font-medium'}`}>{inquiry.name}</h3>
+                    <h3 className={`text-gray-900 ${inquiry.status === 'Pending' ? 'font-bold' : 'font-medium'}`}>{inquiry.name}</h3>
                     <span className="text-xs text-gray-500">
                       {new Date(inquiry.createdAt).toLocaleDateString()}
                     </span>
                   </div>
-                  <p className={`text-sm mb-2 ${!inquiry.isRead ? 'text-gray-800' : 'text-gray-500'}`}>{inquiry.subject}</p>
+                  <p className={`text-sm mb-2 ${inquiry.status === 'Pending' ? 'text-gray-800' : 'text-gray-500'}`}>{inquiry.subject}</p>
                   <div className="flex justify-between items-center">
-                    {!inquiry.isRead ? <Mail className="text-blue-500" size={16} /> : <MailOpen className="text-gray-400" size={16} />}
+                    <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(inquiry.status)}`}>
+                      {inquiry.status}
+                    </span>
                     <button onClick={(e) => handleDelete(inquiry._id, e)} className="text-red-400 hover:text-red-700">
                       <Trash2 size={16} />
                     </button>
@@ -109,8 +124,19 @@ const InquiryManagement = () => {
                   <p className="text-gray-600">From: <span className="font-medium text-gray-900">{selectedInquiry.name}</span> &lt;{selectedInquiry.email}&gt;</p>
                   <p className="text-gray-600">Phone: <span className="font-medium text-gray-900">{selectedInquiry.phone}</span></p>
                 </div>
-                <div className="text-right text-gray-500 text-sm">
-                  {new Date(selectedInquiry.createdAt).toLocaleString()}
+                <div className="text-right flex flex-col items-end">
+                  <div className="text-gray-500 text-sm mb-3">
+                    {new Date(selectedInquiry.createdAt).toLocaleString()}
+                  </div>
+                  <select 
+                    value={selectedInquiry.status} 
+                    onChange={(e) => updateStatus(selectedInquiry._id, e.target.value)}
+                    className="border rounded px-3 py-1 text-sm bg-gray-50 focus:outline-none focus:ring focus:ring-blue-200"
+                  >
+                    <option value="Pending">Status: Pending</option>
+                    <option value="Contacted">Status: Contacted</option>
+                    <option value="Resolved">Status: Resolved</option>
+                  </select>
                 </div>
               </div>
               <div className="prose max-w-none text-gray-800 whitespace-pre-wrap">
