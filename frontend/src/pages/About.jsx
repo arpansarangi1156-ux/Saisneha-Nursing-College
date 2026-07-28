@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import SEO from '../components/SEO';
 import { Target, Compass, Award, Building } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -37,7 +37,7 @@ const About = () => {
     <>
       <SEO 
         title="About Us" 
-        description="Learn about Saisneha College of Nursing, our mission, vision, and leadership." 
+        description="Learn about Saisneha College of Nursing and Health Sciences, our mission, vision, and leadership." 
       />
 
       {/* Page Header */}
@@ -80,7 +80,7 @@ const About = () => {
             <motion.div variants={fadeInUp} className="md:w-1/2">
               <h2 className="text-3xl md:text-4xl font-extrabold text-[var(--color-medical-blue)] mb-8">College Overview</h2>
               <p className="text-gray-600 mb-6 text-lg leading-relaxed">
-                Saisneha College of Nursing is a newly established, premier institution committed to preparing the next generation of healthcare leaders. Our college is founded on the principles of evidence-based practice, ethical care, and community service.
+                Saisneha College of Nursing and Health Sciences is a newly established, premier institution committed to preparing the next generation of healthcare leaders. Our college is founded on the principles of evidence-based practice, ethical care, and community service.
               </p>
               <p className="text-gray-600 text-lg leading-relaxed mb-8">
                 With a focus on holistic development, we provide our students with an environment that fosters intellectual growth, critical thinking, and technical proficiency. Although we are new, our dedication to upholding the highest standards of nursing education is unwavering.
@@ -166,12 +166,12 @@ const About = () => {
           <motion.div variants={fadeInUp} className="bg-blue-50 p-12 rounded-[3rem] relative shadow-inner">
             <div className="text-8xl text-[var(--color-medical-blue)] opacity-10 absolute top-0 left-8">"</div>
             <p className="text-2xl text-gray-700 font-medium leading-relaxed mb-10 relative z-10 italic">
-              "Welcome to Saisneha College of Nursing. Our goal is to empower individuals who have a passion for caring. We are building an institution where rigorous academics meet deep compassion. The future of healthcare relies on dedicated nurses, and we are committed to providing you with the knowledge, skills, and values needed to make a profound difference."
+              "Welcome to Saisneha College of Nursing and Health Sciences. Our goal is to empower individuals who have a passion for caring. We are building an institution where rigorous academics meet deep compassion. The future of healthcare relies on dedicated nurses, and we are committed to providing you with the knowledge, skills, and values needed to make a profound difference."
             </p>
             <div className="flex items-center justify-center flex-col">
               <div className="w-16 h-1 bg-[var(--color-soft-green)] rounded-full mb-6"></div>
               <h4 className="text-xl font-bold text-gray-900">Principal's Name</h4>
-              <span className="text-base text-gray-500 font-medium uppercase tracking-wider mt-1">Principal, Saisneha College</span>
+              <span className="text-base text-gray-500 font-medium uppercase tracking-wider mt-1">Principal, Saisneha College of Nursing and Health Sciences</span>
             </div>
           </motion.div>
         </motion.div>

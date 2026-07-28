@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -12,7 +12,7 @@ const AdminLogin = () => {
   
   const navigate = useNavigate();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (localStorage.getItem('adminToken')) {
       navigate('/admin/dashboard');
     }
@@ -38,7 +38,7 @@ const AdminLogin = () => {
   return (
     <>
       <Helmet>
-        <title>Admin Portal | Saisneha College</title>
+        <title>Admin Portal | Saisneha College of Nursing and Health Sciences</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 

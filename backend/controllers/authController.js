@@ -7,17 +7,18 @@ const generateToken = (id) => {
   });
 };
 
-const allowedAdmins = [
-  "admin@saisneha.edu",
-  "kkmishrasai@gmail.com",
-  "arpansarangi1156@gmail.com" // Update with real email
-];
+const getAllowedAdmins = () => {
+  if (process.env.ALLOWED_ADMIN_EMAILS) {
+    return process.env.ALLOWED_ADMIN_EMAILS.split(',').map(email => email.trim());
+  }
+  return [];
+};
 
 export const authAdmin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    if (!allowedAdmins.includes(email)) {
+    if (!getAllowedAdmins().includes(email)) {
       return res.status(403).json({ message: 'Access Denied: Email not authorized.' });
     }
 
@@ -42,7 +43,7 @@ export const registerAdmin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    if (!allowedAdmins.includes(email)) {
+    if (!getAllowedAdmins().includes(email)) {
       return res.status(403).json({ message: 'Access Denied: Email not authorized.' });
     }
 

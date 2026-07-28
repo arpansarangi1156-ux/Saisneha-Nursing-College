@@ -1,8 +1,7 @@
-import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
 const SEO = ({ title, description, type = 'website' }) => {
-  const siteName = 'Saisneha College of Nursing';
+  const siteName = 'Saisneha College of Nursing and Health Sciences';
   const fullTitle = title ? `${title} | ${siteName}` : siteName;
 
   return (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import SEO from '../components/SEO';
 import { Image as ImageIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -64,7 +64,7 @@ const Gallery = () => {
     <>
       <SEO 
         title="Gallery" 
-        description="View glimpses of life, learning, and events at Saisneha College of Nursing." 
+        description="View glimpses of life, learning, and events at Saisneha College of Nursing and Health Sciences." 
       />
 
       {/* Page Header */}
@@ -89,7 +89,7 @@ const Gallery = () => {
             transition={{ delay: 0.4, duration: 0.6 }}
             className="text-xl text-blue-100 max-w-2xl mx-auto"
           >
-            Glimpses of life, learning, and events at Saisneha College of Nursing.
+            Glimpses of life, learning, and events at Saisneha College of Nursing and Health Sciences.
           </motion.p>
         </div>
       </motion.div>

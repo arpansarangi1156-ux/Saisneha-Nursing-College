@@ -8,6 +8,7 @@ import mongoSanitize from 'express-mongo-sanitize';
 import compression from 'compression';
 import morgan from 'morgan';
 import xss from 'xss-clean';
+import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 // Load env vars
 dotenv.config();
 
@@ -20,7 +21,7 @@ const app = express();
 app.use(helmet());
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
-    ? process.env.FRONTEND_URL 
+    ? process.env.FRONTEND_URL?.split(',') || process.env.FRONTEND_URL
     : ['http://localhost:5173', 'http://localhost:3005'],
   credentials: true
 };
@@ -71,6 +72,9 @@ app.use('/api/dashboard', dashboardRoutes);
 app.get('/api/health', (req, res) => {
   res.status(200).json({ success: true, message: 'API is running' });
 });
+
+app.use(notFound);
+app.use(errorHandler);
 
 // Port & Server
 const PORT = process.env.PORT || 5000;

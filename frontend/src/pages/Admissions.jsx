@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import SEO from '../components/SEO';
 import { FileText, CheckCircle, HelpCircle, Send, CheckCircle2, Bell } from 'lucide-react';
 import { motion } from 'framer-motion';

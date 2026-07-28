@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import axios from 'axios';
 
@@ -40,8 +40,8 @@ const Footer = () => {
                 <span className="text-2xl font-black tracking-tighter text-white leading-none">
                   SAISNEHA
                 </span>
-                <span className="text-[10px] font-bold text-blue-200 uppercase tracking-[0.25em] mt-1 leading-none ml-0.5">
-                  College of Nursing
+                <span className="text-[9px] font-bold text-blue-200 uppercase tracking-[0.15em] mt-0.5 leading-none">
+                  College of Nursing & Health Sciences
                 </span>
               </div>
             </div>
@@ -123,7 +123,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="mt-10 pt-6 border-t border-white/10 text-center text-sm text-blue-200">
-          <p>&copy; {new Date().getFullYear()} Saisneha College of Nursing. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Saisneha College of Nursing and Health Sciences. All rights reserved.</p>
         </div>
       </div>
     </footer>

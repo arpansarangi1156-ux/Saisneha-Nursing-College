@@ -1,4 +1,3 @@
-import React from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Users, BookOpen, Image as ImageIcon, MessageSquare, LogOut, FileText, Settings, ShieldCheck } from 'lucide-react';
 

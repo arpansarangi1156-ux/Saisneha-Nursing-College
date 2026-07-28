@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import SEO from '../components/SEO';
 import { Link as RouterLink } from 'react-router-dom';
 import axios from 'axios';

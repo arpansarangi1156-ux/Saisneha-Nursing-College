@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react';
+import { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 
@@ -15,6 +15,7 @@ const Facilities = lazy(() => import('./pages/Facilities'));
 const Gallery = lazy(() => import('./pages/Gallery'));
 const Admissions = lazy(() => import('./pages/Admissions'));
 const Contact = lazy(() => import('./pages/Contact'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
 // Lazy loaded Admin Pages
 const AdminLogin = lazy(() => import('./admin/AdminLogin'));
@@ -77,6 +78,7 @@ function App() {
                 <Route path="/gallery" element={<Gallery />} />
                 <Route path="/admissions" element={<Admissions />} />
                 <Route path="/contact" element={<Contact />} />
+                <Route path="*" element={<NotFound />} />
               </Route>
             </Routes>
           </Suspense>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 
@@ -29,8 +29,8 @@ const Navbar = () => {
                 <span className="text-2xl font-black tracking-tighter bg-gradient-to-r from-[var(--color-medical-blue)] to-[var(--color-soft-green)] bg-clip-text text-transparent leading-none">
                   SAISNEHA
                 </span>
-                <span className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.25em] mt-1 leading-none ml-0.5">
-                  College of Nursing
+                <span className="text-[9px] font-bold text-gray-500 uppercase tracking-[0.15em] mt-0.5 leading-none">
+                  College of Nursing & Health Sciences
                 </span>
               </div>
             </Link>

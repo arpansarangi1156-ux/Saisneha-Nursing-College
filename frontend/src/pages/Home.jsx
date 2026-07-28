@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import SEO from '../components/SEO';
 import { Link } from 'react-router-dom';
 import { ArrowRight, HeartPulse, ShieldCheck, BookOpen, Users, Building, Activity, Award } from 'lucide-react';
@@ -79,7 +79,7 @@ const Home = () => {
             variants={staggerContainer}
           >
             <motion.div variants={sentenceVariants} className="text-[var(--color-soft-green)] font-semibold tracking-wider uppercase text-sm mb-4 flex justify-center overflow-hidden">
-              {"Welcome to Saisneha College".split("").map((char, index) => (
+              {"Welcome to Saisneha College of Nursing and Health Sciences".split("").map((char, index) => (
                 <motion.span key={index} variants={letterVariants}>
                   {char === " " ? "\u00A0" : char}
                 </motion.span>
@@ -116,7 +116,7 @@ const Home = () => {
             <motion.div variants={fadeInUp}>
               <h2 className="text-3xl md:text-5xl font-extrabold text-[var(--color-medical-blue)] mb-6">Empowering the Next Generation of Nurses</h2>
               <p className="text-xl text-gray-600 mb-6 leading-relaxed">
-                At Saisneha College of Nursing, we are dedicated to transforming passionate students into highly skilled, compassionate healthcare professionals. 
+                At Saisneha College of Nursing and Health Sciences, we are dedicated to transforming passionate students into highly skilled, compassionate healthcare professionals. 
               </p>
               <p className="text-lg text-gray-500 mb-8 leading-relaxed">
                 Our curriculum blends rigorous academic theory with intensive clinical practice, ensuring our graduates are ready to meet the complex demands of modern healthcare environments with confidence and empathy.

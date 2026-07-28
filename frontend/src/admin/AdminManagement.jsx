@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import axios from 'axios';
 import { UserPlus, Trash2, ShieldCheck, Mail, Lock } from 'lucide-react';
@@ -22,7 +22,7 @@ const AdminManagement = () => {
     return { headers: { Authorization: `Bearer ${token}` } };
   };
 
-  const fetchAdmins = async () => {
+  async function fetchAdmins() {
     try {
       const { data } = await axios.get('/api/auth', getHeaders());
       setAdmins(data);
@@ -62,7 +62,7 @@ const AdminManagement = () => {
   return (
     <>
       <Helmet>
-        <title>Manage Admins | Saisneha College</title>
+        <title>Manage Admins | Saisneha College of Nursing and Health Sciences</title>
       </Helmet>
       
       <div className="mb-6">
