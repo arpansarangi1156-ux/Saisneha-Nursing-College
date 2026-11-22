@@ -5,20 +5,20 @@ import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import { optimizeCloudinaryUrl } from '../utils/cloudinary';
 
+// Fallback data if backend is not connected
+const FALLBACK_ITEMS = [
+  { _id: 1, category: 'Events', title: 'Annual Day 2025' },
+  { _id: 2, category: 'Campus', title: 'Main Building' },
+  { _id: 3, category: 'Facilities', title: 'Nursing Lab Session' },
+  { _id: 4, category: 'Events', title: 'Lamp Lighting Ceremony' },
+  { _id: 5, category: 'Campus', title: 'Student Garden' },
+  { _id: 6, category: 'Facilities', title: 'Library Study Area' },
+];
+
 const Gallery = () => {
   const [activeTab, setActiveTab] = useState('All');
   const [galleryItems, setGalleryItems] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  // Fallback data if backend is not connected
-  const fallbackItems = [
-    { _id: 1, category: 'Events', title: 'Annual Day 2025' },
-    { _id: 2, category: 'Campus', title: 'Main Building' },
-    { _id: 3, category: 'Facilities', title: 'Nursing Lab Session' },
-    { _id: 4, category: 'Events', title: 'Lamp Lighting Ceremony' },
-    { _id: 5, category: 'Campus', title: 'Student Garden' },
-    { _id: 6, category: 'Facilities', title: 'Library Study Area' },
-  ];
 
   useEffect(() => {
     const fetchGallery = async () => {
@@ -27,11 +27,11 @@ const Gallery = () => {
         if (Array.isArray(data) && data.length > 0) {
           setGalleryItems(data);
         } else {
-          setGalleryItems(fallbackItems);
+          setGalleryItems(FALLBACK_ITEMS);
         }
       } catch (error) {
         console.error('Error fetching gallery', error);
-        setGalleryItems(fallbackItems);
+        setGalleryItems(FALLBACK_ITEMS);
       } finally {
         setLoading(false);
       }

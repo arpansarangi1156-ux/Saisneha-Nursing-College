@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import SEO from '../components/SEO';
-import { MapPin, Phone, Mail, Clock, Send, CheckCircle } from 'lucide-react';
+import { MapPin, Phone, Mail, Send, CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
@@ -28,7 +28,7 @@ const Contact = () => {
       try {
         const { data } = await axios.get('/api/settings');
         if (data) setSettings(data);
-      } catch (error) {
+      } catch {
         // Silently fail and use fallbacks
       }
     };
@@ -54,7 +54,7 @@ const Contact = () => {
       setStatus({ loading: false, success: true, error: null });
       setFormData({ firstName: '', lastName: '', email: '', subject: '', message: '' });
       setTimeout(() => setStatus(prev => ({ ...prev, success: false })), 5000);
-    } catch (error) {
+    } catch {
       // Simulate API call fallback if backend is down
       setTimeout(() => {
         setStatus({ loading: false, success: true, error: null });

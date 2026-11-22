@@ -97,7 +97,7 @@ const AdmissionCRUD = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         fetchAnnouncements();
-      } catch (error) {
+      } catch {
         alert('Error deleting record');
       }
     }
@@ -110,7 +110,7 @@ const AdmissionCRUD = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchAnnouncements();
-    } catch (error) {
+    } catch {
       alert('Error updating status');
     }
   };

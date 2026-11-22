@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import axios from 'axios';
-import { Trash2, MailOpen, Mail } from 'lucide-react';
+import { Trash2, MailOpen } from 'lucide-react';
 
 const InquiryManagement = () => {
   const [inquiries, setInquiries] = useState([]);
@@ -56,7 +56,7 @@ const InquiryManagement = () => {
         });
         fetchInquiries();
         if (selectedInquiry?._id === id) setSelectedInquiry(null);
-      } catch (error) {
+      } catch {
         alert('Error deleting message');
       }
     }

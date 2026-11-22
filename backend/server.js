@@ -19,10 +19,30 @@ const app = express();
 
 // Security Middlewares
 app.use(helmet());
+
+// Dynamic CORS configuration (strips trailing slashes and trims whitespace)
+const configuredOrigins = process.env.FRONTEND_URL
+  ? process.env.FRONTEND_URL.split(',').map(url => url.trim().replace(/\/$/, '')).filter(Boolean)
+  : [];
+const devOrigins = ['http://localhost:5173', 'http://localhost:3005', 'http://localhost:5000', 'http://localhost:5002'];
+
 const corsOptions = {
-  origin: process.env.NODE_ENV === 'production' 
-    ? process.env.FRONTEND_URL?.split(',') || process.env.FRONTEND_URL
-    : ['http://localhost:5173', 'http://localhost:3005'],
+  origin: (origin, callback) => {
+    // Allow non-browser requests (e.g. mobile apps, curl, server-to-server)
+    if (!origin) return callback(null, true);
+    
+    const cleanOrigin = origin.replace(/\/$/, '');
+    const isAllowed = 
+      process.env.NODE_ENV !== 'production' ||
+      configuredOrigins.includes(cleanOrigin) ||
+      configuredOrigins.includes('*') ||
+      devOrigins.includes(cleanOrigin);
+
+    if (isAllowed) {
+      return callback(null, true);
+    }
+    return callback(new Error(`CORS blocked for origin: ${origin}`));
+  },
   credentials: true
 };
 app.use(cors(corsOptions));
@@ -71,6 +91,16 @@ app.use('/api/dashboard', dashboardRoutes);
 
 app.get('/api/health', (req, res) => {
   res.status(200).json({ success: true, message: 'API is running' });
+});
+
+// Root route
+app.get('/', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'Saisneha College of Nursing & Health Sciences API is active',
+    healthCheck: '/api/health',
+    status: 'operational'
+  });
 });
 
 app.use(notFound);

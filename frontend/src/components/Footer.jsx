@@ -20,7 +20,7 @@ const Footer = () => {
         if (data) {
           setSettings(data);
         }
-      } catch (error) {
+      } catch {
         // Silently fail and use fallbacks
       }
     };

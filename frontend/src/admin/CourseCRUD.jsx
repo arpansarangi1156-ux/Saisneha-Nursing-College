@@ -94,7 +94,7 @@ const CourseCRUD = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         fetchCourses();
-      } catch (error) {
+      } catch {
         alert('Error deleting course');
       }
     }

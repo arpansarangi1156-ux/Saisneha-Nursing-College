@@ -100,7 +100,7 @@ const GalleryCRUD = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         fetchGallery();
-      } catch (error) {
+      } catch {
         alert('Error deleting image');
       }
     }

@@ -106,7 +106,7 @@ const FacultyCRUD = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         fetchFaculty();
-      } catch (error) {
+      } catch {
         alert('Error deleting profile');
       }
     }

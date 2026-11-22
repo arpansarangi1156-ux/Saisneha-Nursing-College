@@ -46,7 +46,7 @@ const Admissions = () => {
       setStatus({ loading: false, success: true, error: null });
       setFormData({ name: '', email: '', phone: '', course: '', message: '' });
       setTimeout(() => setStatus(prev => ({ ...prev, success: false })), 5000);
-    } catch (error) {
+    } catch {
       setStatus({ loading: false, success: false, error: 'Failed to submit inquiry. Please try again.' });
     }
   };

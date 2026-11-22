@@ -11,7 +11,7 @@ services:
       - key: PORT
         value: 5000
       - key: FRONTEND_URL
-        value: https://saisneha-college-frontend.onrender.com
+        value: https://saisneha-nursing-college.vercel.app
       - key: MONGO_URI
         sync: false
       - key: JWT_SECRET
@@ -31,4 +31,4 @@ services:
     staticPublishPath: ./dist
     envVars:
       - key: VITE_API_URL
-        value: https://saisneha-college-backend.onrender.com/api
+        value: https://saisneha-nursing-college.onrender.com

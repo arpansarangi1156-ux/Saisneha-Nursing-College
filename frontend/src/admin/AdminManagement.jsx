@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import axios from 'axios';
 import { UserPlus, Trash2, ShieldCheck, Mail, Lock } from 'lucide-react';
@@ -13,25 +13,26 @@ const AdminManagement = () => {
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    fetchAdmins();
-  }, []);
-
   const getHeaders = () => {
     const token = localStorage.getItem('adminToken');
     return { headers: { Authorization: `Bearer ${token}` } };
   };
 
-  async function fetchAdmins() {
+  const fetchAdmins = useCallback(async () => {
     try {
       const { data } = await axios.get('/api/auth', getHeaders());
       setAdmins(data);
-    } catch (err) {
+      setError('');
+    } catch {
       setError('Failed to load admins');
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchAdmins();
+  }, [fetchAdmins]);
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -123,6 +124,11 @@ const AdminManagement = () => {
 
         {/* Admins List */}
         <div className="lg:col-span-2 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+          {error && (
+            <div className="p-3 bg-red-50 text-red-700 text-sm border-b border-red-100">
+              {error}
+            </div>
+          )}
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
